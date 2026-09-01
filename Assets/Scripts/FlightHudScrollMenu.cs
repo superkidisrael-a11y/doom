@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Hold right-click to open a cursor-driven flight menu near the centre-right
-/// of the screen. The wheel and the visible buttons both change selection.
+/// Hold right-click to open a cursor-driven tower menu near the centre-right
+/// of the screen. Selecting an item force-closes it for the current hold.
 /// </summary>
 public class FlightHudScrollMenu : MonoBehaviour
 {
@@ -32,11 +32,19 @@ public class FlightHudScrollMenu : MonoBehaviour
         selectionHandler = onSelected;
     }
 
+    public void ForceClose()
+    {
+        dismissedForCurrentHold = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     private void Update()
     {
-        if (Input.GetMouseButtonUp(1))
+        if (!Input.GetMouseButton(1))
         {
             dismissedForCurrentHold = false;
+            return;
         }
 
         if (!IsOpen)
@@ -69,7 +77,7 @@ public class FlightHudScrollMenu : MonoBehaviour
         float x = Mathf.Clamp(Screen.width * 0.68f, padding, Screen.width - width - padding);
         float y = (Screen.height - height) * 0.5f;
 
-        GUI.Box(new Rect(x, y, width, height), "T1 Towers");
+        GUI.Box(new Rect(x, y, width, height), "All Towers");
         GUI.Label(
             new Rect(x + padding, y + 24f, width - padding * 2f, 24f),
             "Scroll to highlight, click to choose");
@@ -86,6 +94,7 @@ public class FlightHudScrollMenu : MonoBehaviour
             if (GUI.Button(buttonRect, prefix + items[index]))
             {
                 Select(index);
+                return;
             }
         }
 
@@ -108,10 +117,8 @@ public class FlightHudScrollMenu : MonoBehaviour
     private void Select(int index)
     {
         selectedIndex = index;
+        ForceClose();
         Debug.Log("Flight menu selected: " + SelectedItem);
         selectionHandler?.Invoke(index);
-        dismissedForCurrentHold = true;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 }

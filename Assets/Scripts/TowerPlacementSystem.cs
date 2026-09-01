@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Selects T1 towers from the right-click HUD and places them using a ray from
+/// Selects towers from the right-click HUD and places them using a ray from
 /// the exact centre of the screen. Only the named placement floor is valid.
 /// </summary>
 public class TowerPlacementSystem : MonoBehaviour
@@ -49,8 +49,13 @@ public class TowerPlacementSystem : MonoBehaviour
 
     private void Update()
     {
-        if (selectedPrefab == null)
+        if (selectedPrefab == null || preview == null)
         {
+            if (selectedPrefab != null)
+            {
+                CancelPlacement();
+            }
+
             return;
         }
 
@@ -75,6 +80,7 @@ public class TowerPlacementSystem : MonoBehaviour
             return;
         }
 
+        hudMenu.ForceClose();
         CancelPlacement();
         selectedPrefab = towerPrefabs[towerIndex];
         preview = Instantiate(selectedPrefab);
@@ -94,7 +100,7 @@ public class TowerPlacementSystem : MonoBehaviour
     private void UpdatePlacementPreview()
     {
         Camera activeCamera = Camera.main;
-        if (activeCamera == null || placementFloor == null)
+        if (activeCamera == null || placementFloor == null || preview == null)
         {
             SetPreviewVisible(false);
             hasValidPlacement = false;
