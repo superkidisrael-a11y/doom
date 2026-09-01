@@ -9,6 +9,8 @@ public class BirdFlightController : MonoBehaviour
     [Header("Flight")]
     [SerializeField] private float moveSpeed = 12f;
     [SerializeField] private float verticalSpeed = 9f;
+    [SerializeField] private float shiftMoveSpeedBonus = 8f;
+    [SerializeField] private float shiftVerticalSpeedBonus = 6f;
     [SerializeField] private float turnSensitivity = 3f;
     [SerializeField] private float maxPitch = 80f;
     [SerializeField] private float rotationSmoothing = 12f;
@@ -79,6 +81,10 @@ public class BirdFlightController : MonoBehaviour
             vertical -= 1f;
         }
 
+        bool isBoosting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        float currentMoveSpeed = moveSpeed + (isBoosting ? shiftMoveSpeedBonus : 0f);
+        float currentVerticalSpeed = verticalSpeed + (isBoosting ? shiftVerticalSpeedBonus : 0f);
+
         // Keep WASD level so looking up/down does not change altitude.
         Vector3 flatForward = Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
         Vector3 flatRight = Vector3.ProjectOnPlane(transform.right, Vector3.up).normalized;
@@ -88,8 +94,8 @@ public class BirdFlightController : MonoBehaviour
             direction.Normalize();
         }
 
-        direction += Vector3.up * (vertical * (verticalSpeed / moveSpeed));
-        transform.position += direction * (moveSpeed * Time.deltaTime);
+        Vector3 velocity = direction * currentMoveSpeed + Vector3.up * (vertical * currentVerticalSpeed);
+        transform.position += velocity * Time.deltaTime;
     }
 
     private static float NormalizeAngle(float angle)
