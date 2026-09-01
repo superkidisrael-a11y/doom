@@ -9,7 +9,9 @@ public class StartScreenCubeButton : MonoBehaviour
 
     private Vector3 normalScale;
     private Action clickAction;
+    private Collider cubeCollider;
     private bool hovered;
+    private bool pressed;
 
     public void Setup(Action onClick)
     {
@@ -20,31 +22,40 @@ public class StartScreenCubeButton : MonoBehaviour
     private void Awake()
     {
         normalScale = transform.localScale;
+        cubeCollider = GetComponent<Collider>();
     }
 
-    private void OnMouseEnter()
+    private void Update()
     {
-        hovered = true;
-        transform.localScale = normalScale * hoverScale;
-    }
-
-    private void OnMouseExit()
-    {
-        hovered = false;
-        transform.localScale = normalScale;
-    }
-
-    private void OnMouseDown()
-    {
-        transform.localScale = Vector3.Scale(normalScale, pressScale);
-    }
-
-    private void OnMouseUp()
-    {
-        transform.localScale = hovered ? normalScale * hoverScale : normalScale;
-        if (hovered)
+        Camera activeCamera = Camera.main;
+        if (activeCamera == null || cubeCollider == null)
         {
-            clickAction?.Invoke();
+            return;
+        }
+
+        Ray ray = activeCamera.ScreenPointToRay(Input.mousePosition);
+        bool isHovered = Physics.Raycast(ray, out RaycastHit hit) && hit.collider == cubeCollider;
+
+        if (isHovered != hovered)
+        {
+            hovered = isHovered;
+            transform.localScale = hovered ? normalScale * hoverScale : normalScale;
+        }
+
+        if (hovered && Input.GetMouseButtonDown(0))
+        {
+            pressed = true;
+            transform.localScale = Vector3.Scale(normalScale, pressScale);
+        }
+
+        if (pressed && Input.GetMouseButtonUp(0))
+        {
+            pressed = false;
+            transform.localScale = hovered ? normalScale * hoverScale : normalScale;
+            if (hovered)
+            {
+                clickAction?.Invoke();
+            }
         }
     }
 }

@@ -75,15 +75,11 @@ public class StartScreenCubeMenu : MonoBehaviour
         for (int index = 0; index < smallCubes.Count; index++)
         {
             GameObject cube = smallCubes[index];
-            bool hasOption = index < options.Length;
-            cube.SetActive(hasOption);
+            cube.SetActive(true);
 
-            if (!hasOption)
-            {
-                continue;
-            }
-
-            MenuOption option = options[index];
+            // Keep every original menu cube available; repeat this menu's
+            // option set across any additional cubes instead of hiding them.
+            MenuOption option = options[index % options.Length];
             TextMesh label = FindLabel(cube);
             if (label != null)
             {
