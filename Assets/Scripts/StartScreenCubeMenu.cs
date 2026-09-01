@@ -5,16 +5,10 @@ using UnityEngine;
 public class StartScreenCubeMenu : MonoBehaviour
 {
     private readonly List<GameObject> smallCubes = new List<GameObject>();
-    private static readonly string[] BlockNames =
-    {
-        "Wall", "Cannon", "Archer", "Frost", "Bomb", "Laser",
-        "Mortar", "Tesla", "Slow", "Fire", "Air", "Support"
-    };
 
     private void Start()
     {
         GameObject[] allObjects = FindObjectsOfType<GameObject>();
-        int smallIndex = 0;
 
         foreach (GameObject candidate in allObjects)
         {
@@ -28,40 +22,95 @@ public class StartScreenCubeMenu : MonoBehaviour
 
             if (Mathf.Approximately(width, 2f) || isSaveOne)
             {
-                ConfigureSmallCube(candidate, smallIndex++, !isSaveOne);
+                ConfigureSmallCube(candidate);
             }
             else if (width > 3f && !IsAlphaCube(candidate))
             {
                 StartScreenCubeButton button = candidate.AddComponent<StartScreenCubeButton>();
-                button.Setup(OpenBlockMenu);
+                button.Setup(() => OpenMenuFor(candidate));
             }
         }
     }
 
-    private void ConfigureSmallCube(GameObject cube, int index, bool assignBlockName)
+    private void ConfigureSmallCube(GameObject cube)
     {
         smallCubes.Add(cube);
-
-        TextMesh label = FindLabel(cube);
-        if (assignBlockName && label != null)
-        {
-            label.text = BlockNames[index % BlockNames.Length];
-        }
 
         StartScreenCubeButton button = cube.AddComponent<StartScreenCubeButton>();
         button.Setup(() => { });
         cube.SetActive(false);
     }
 
-    private void OpenBlockMenu()
+    private void OpenMenuFor(GameObject sourceCube)
+    {
+        if (HasLabel(sourceCube, "new game"))
+        {
+            ShowOptions(
+                new MenuOption("Start Game", label => SetMessage(label, "Starting new game")),
+                new MenuOption("Choose Map", label => SetMessage(label, "Map: Doom Fields")),
+                new MenuOption("Difficulty", label => SetMessage(label, "Difficulty: Normal")),
+                new MenuOption("Back", label => HideMenu()));
+            return;
+        }
+
+        if (HasLabel(sourceCube, "hello gang"))
+        {
+            ShowOptions(
+                new MenuOption("Say Hello", label => SetMessage(label, "Hello, gang!")),
+                new MenuOption("About", label => SetMessage(label, "Tower Defense of Doom")),
+                new MenuOption("Credits", label => SetMessage(label, "Created by Superkidisrael")),
+                new MenuOption("Back", label => HideMenu()));
+            return;
+        }
+
+        ShowOptions(
+            new MenuOption("Wall", label => SetMessage(label, "Wall selected")),
+            new MenuOption("Cannon", label => SetMessage(label, "Cannon selected")),
+            new MenuOption("Archer", label => SetMessage(label, "Archer selected")),
+            new MenuOption("Back", label => HideMenu()));
+    }
+
+    private void ShowOptions(params MenuOption[] options)
+    {
+        for (int index = 0; index < smallCubes.Count; index++)
+        {
+            GameObject cube = smallCubes[index];
+            bool hasOption = index < options.Length;
+            cube.SetActive(hasOption);
+
+            if (!hasOption)
+            {
+                continue;
+            }
+
+            MenuOption option = options[index];
+            TextMesh label = FindLabel(cube);
+            if (label != null)
+            {
+                label.text = option.text;
+            }
+
+            StartScreenCubeButton button = cube.GetComponent<StartScreenCubeButton>();
+            button.Setup(() => option.action(label));
+        }
+    }
+
+    private void HideMenu()
     {
         foreach (GameObject cube in smallCubes)
         {
-            if (cube != null)
-            {
-                cube.SetActive(true);
-            }
+            cube.SetActive(false);
         }
+    }
+
+    private static void SetMessage(TextMesh label, string message)
+    {
+        if (label != null)
+        {
+            label.text = message;
+        }
+
+        Debug.Log(message);
     }
 
     private static bool IsAlphaCube(GameObject cube)
@@ -89,5 +138,17 @@ public class StartScreenCubeMenu : MonoBehaviour
         }
 
         return labels.Length > 0 ? labels[0] : null;
+    }
+
+    private class MenuOption
+    {
+        public readonly string text;
+        public readonly System.Action<TextMesh> action;
+
+        public MenuOption(string text, System.Action<TextMesh> action)
+        {
+            this.text = text;
+            this.action = action;
+        }
     }
 }
