@@ -22,6 +22,11 @@ public class BirdFlightController : MonoBehaviour
 
     private void Start()
     {
+        if (GetComponent<FlightHudScrollMenu>() == null)
+        {
+            gameObject.AddComponent<FlightHudScrollMenu>();
+        }
+
         Vector3 startAngles = transform.eulerAngles;
         yaw = startAngles.y;
         pitch = NormalizeAngle(startAngles.x);
@@ -32,7 +37,17 @@ public class BirdFlightController : MonoBehaviour
 
     private void Update()
     {
-        AimWithMouse();
+        bool menuHeld = Input.GetMouseButton(1);
+        if (menuHeld)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            AimWithMouse();
+        }
+
         Fly();
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -40,7 +55,7 @@ public class BirdFlightController : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        else if (Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButtonUp(1) || (!menuHeld && Input.GetMouseButtonDown(0)))
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
