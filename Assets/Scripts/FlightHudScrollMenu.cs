@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -6,21 +7,39 @@ using UnityEngine;
 /// </summary>
 public class FlightHudScrollMenu : MonoBehaviour
 {
-    private static readonly string[] Items =
+    private static readonly string[] DefaultItems =
     {
         "Wall", "Cannon", "Archer", "Frost",
         "Bomb", "Laser", "Support", "Cancel"
     };
 
+    private string[] items = DefaultItems;
+    private Action<int> selectionHandler;
     private int selectedIndex;
-    private bool isOpen;
+    private bool dismissedForCurrentHold;
 
-    public string SelectedItem => Items[selectedIndex];
+    public bool IsOpen => Input.GetMouseButton(1) && !dismissedForCurrentHold;
+    public string SelectedItem => items.Length > 0 ? items[selectedIndex] : "None";
+
+    public void Configure(string[] itemNames, Action<int> onSelected)
+    {
+        if (itemNames != null && itemNames.Length > 0)
+        {
+            items = itemNames;
+            selectedIndex = Mathf.Clamp(selectedIndex, 0, items.Length - 1);
+        }
+
+        selectionHandler = onSelected;
+    }
 
     private void Update()
     {
-        isOpen = Input.GetMouseButton(1);
-        if (!isOpen)
+        if (Input.GetMouseButtonUp(1))
+        {
+            dismissedForCurrentHold = false;
+        }
+
+        if (!IsOpen)
         {
             return;
         }
@@ -38,7 +57,7 @@ public class FlightHudScrollMenu : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!isOpen)
+        if (!IsOpen || items.Length == 0)
         {
             return;
         }
@@ -46,16 +65,16 @@ public class FlightHudScrollMenu : MonoBehaviour
         const float width = 250f;
         const float rowHeight = 34f;
         const float padding = 12f;
-        float height = 78f + Items.Length * rowHeight;
+        float height = 78f + items.Length * rowHeight;
         float x = Mathf.Clamp(Screen.width * 0.68f, padding, Screen.width - width - padding);
         float y = (Screen.height - height) * 0.5f;
 
-        GUI.Box(new Rect(x, y, width, height), "Flight Menu");
+        GUI.Box(new Rect(x, y, width, height), "T1 Towers");
         GUI.Label(
             new Rect(x + padding, y + 24f, width - padding * 2f, 24f),
-            "Scroll or click an item");
+            "Scroll to highlight, click to choose");
 
-        for (int index = 0; index < Items.Length; index++)
+        for (int index = 0; index < items.Length; index++)
         {
             string prefix = index == selectedIndex ? ">  " : "   ";
             Rect buttonRect = new Rect(
@@ -64,7 +83,7 @@ public class FlightHudScrollMenu : MonoBehaviour
                 width - padding * 2f,
                 rowHeight - 4f);
 
-            if (GUI.Button(buttonRect, prefix + Items[index]))
+            if (GUI.Button(buttonRect, prefix + items[index]))
             {
                 Select(index);
             }
@@ -77,18 +96,22 @@ public class FlightHudScrollMenu : MonoBehaviour
 
     private void ChangeSelection(int direction)
     {
-        int next = (selectedIndex + direction) % Items.Length;
+        int next = (selectedIndex + direction) % items.Length;
         if (next < 0)
         {
-            next += Items.Length;
+            next += items.Length;
         }
 
-        Select(next);
+        selectedIndex = next;
     }
 
     private void Select(int index)
     {
         selectedIndex = index;
         Debug.Log("Flight menu selected: " + SelectedItem);
+        selectionHandler?.Invoke(index);
+        dismissedForCurrentHold = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

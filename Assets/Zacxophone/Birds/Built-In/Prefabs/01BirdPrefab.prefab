@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 253284298084048154}
   - component: {fileID: 8863368757260808999}
   - component: {fileID: 1200000003}
+  - component: {fileID: 1200000004}
   m_Layer: 0
   m_Name: 01BirdPrefab
   m_TagString: Player
@@ -159,9 +160,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 12
   verticalSpeed: 9
+  shiftMoveSpeedBonus: 8
+  shiftVerticalSpeedBonus: 6
   turnSensitivity: 3
   maxPitch: 80
   rotationSmoothing: 12
+--- !u!114 &1200000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4292170788808701894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e4b7c2a1f6d4385b0a9e3c7d2f81460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  towerPrefabs:
+  - {fileID: 100100000, guid: d577b055533d8a94b97f86254b407b23, type: 3}
+  - {fileID: 100100000, guid: efa0b9cd0d15e22499eaab50e517bce7, type: 3}
+  - {fileID: 100100000, guid: b74ff7a9d4610934a86f0d85a0fdd7a0, type: 3}
+  - {fileID: 100100000, guid: 8f708063643e0d94e9e4bf3a09904d49, type: 3}
+  - {fileID: 100100000, guid: e7cd7400bc89edc4080ca71e1e618859, type: 3}
+  - {fileID: 100100000, guid: dbb7c4fba4c21c340ba28e5868caa1d4, type: 3}
+  - {fileID: 100100000, guid: c090d83eb1e9dd540bc535af1af09ca2, type: 3}
+  - {fileID: 100100000, guid: a117837f5d50cf24cb2948fa71af5fee, type: 3}
+  - {fileID: 100100000, guid: de41f0e96c7182d4988abb12e875e7a0, type: 3}
+  - {fileID: 100100000, guid: e88606d6795fdce4dbb3c8562a4bdba2, type: 3}
+  placementFloorName: placement floor plane
+  maximumPlacementDistance: 500
+  gridSize: 1
 --- !u!4 &253284298084048154
 Transform:
   m_ObjectHideFlags: 0
