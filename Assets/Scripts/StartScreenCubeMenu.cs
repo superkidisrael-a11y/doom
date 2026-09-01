@@ -24,9 +24,11 @@ public class StartScreenCubeMenu : MonoBehaviour
             }
 
             float width = candidate.transform.localScale.x;
-            if (Mathf.Approximately(width, 2f))
+            bool isSaveOne = HasLabel(candidate, "save 1");
+
+            if (Mathf.Approximately(width, 2f) || isSaveOne)
             {
-                ConfigureSmallCube(candidate, smallIndex++);
+                ConfigureSmallCube(candidate, smallIndex++, !isSaveOne);
             }
             else if (width > 3f && !IsAlphaCube(candidate))
             {
@@ -36,12 +38,12 @@ public class StartScreenCubeMenu : MonoBehaviour
         }
     }
 
-    private void ConfigureSmallCube(GameObject cube, int index)
+    private void ConfigureSmallCube(GameObject cube, int index, bool assignBlockName)
     {
         smallCubes.Add(cube);
 
         TextMesh label = FindLabel(cube);
-        if (label != null)
+        if (assignBlockName && label != null)
         {
             label.text = BlockNames[index % BlockNames.Length];
         }
@@ -66,6 +68,13 @@ public class StartScreenCubeMenu : MonoBehaviour
     {
         TextMesh label = FindLabel(cube);
         return label != null && label.text.ToLowerInvariant().Contains("welcome");
+    }
+
+    private static bool HasLabel(GameObject cube, string expectedText)
+    {
+        TextMesh label = FindLabel(cube);
+        return label != null &&
+               label.text.Trim().Equals(expectedText, System.StringComparison.OrdinalIgnoreCase);
     }
 
     private static TextMesh FindLabel(GameObject cube)
