@@ -178,18 +178,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   towerPrefabs:
-  - {fileID: 100100000, guid: d577b055533d8a94b97f86254b407b23, type: 3}
-  - {fileID: 100100000, guid: efa0b9cd0d15e22499eaab50e517bce7, type: 3}
-  - {fileID: 100100000, guid: b74ff7a9d4610934a86f0d85a0fdd7a0, type: 3}
-  - {fileID: 100100000, guid: ad3277485b7e6b84ea9b68d3efa2ffd3, type: 3}
-  - {fileID: 100100000, guid: 883acc824b1da47409a3bd490d542e18, type: 3}
-  - {fileID: 100100000, guid: 8f708063643e0d94e9e4bf3a09904d49, type: 3}
-  - {fileID: 100100000, guid: e7cd7400bc89edc4080ca71e1e618859, type: 3}
-  - {fileID: 100100000, guid: dbb7c4fba4c21c340ba28e5868caa1d4, type: 3}
-  - {fileID: 100100000, guid: c090d83eb1e9dd540bc535af1af09ca2, type: 3}
-  - {fileID: 100100000, guid: a117837f5d50cf24cb2948fa71af5fee, type: 3}
-  - {fileID: 100100000, guid: de41f0e96c7182d4988abb12e875e7a0, type: 3}
-  - {fileID: 100100000, guid: e88606d6795fdce4dbb3c8562a4bdba2, type: 3}
+  - {fileID: 1303228201345417726, guid: d577b055533d8a94b97f86254b407b23, type: 3}
+  - {fileID: 8949349836572456424, guid: efa0b9cd0d15e22499eaab50e517bce7, type: 3}
+  - {fileID: 5313689980711173904, guid: b74ff7a9d4610934a86f0d85a0fdd7a0, type: 3}
+  - {fileID: 7981136702100248925, guid: ad3277485b7e6b84ea9b68d3efa2ffd3, type: 3}
+  - {fileID: 6217398572281396749, guid: 883acc824b1da47409a3bd490d542e18, type: 3}
+  - {fileID: 4081170824295185638, guid: 8f708063643e0d94e9e4bf3a09904d49, type: 3}
+  - {fileID: 5081191653986425534, guid: e7cd7400bc89edc4080ca71e1e618859, type: 3}
+  - {fileID: 4801959680204696866, guid: dbb7c4fba4c21c340ba28e5868caa1d4, type: 3}
+  - {fileID: 7554607722757974363, guid: c090d83eb1e9dd540bc535af1af09ca2, type: 3}
+  - {fileID: 920497722322371222, guid: a117837f5d50cf24cb2948fa71af5fee, type: 3}
+  - {fileID: 5691149333875374620, guid: de41f0e96c7182d4988abb12e875e7a0, type: 3}
+  - {fileID: 5501226742513085036, guid: e88606d6795fdce4dbb3c8562a4bdba2, type: 3}
   placementFloorName: placement floor plane
   maximumPlacementDistance: 500
   gridSize: 1
